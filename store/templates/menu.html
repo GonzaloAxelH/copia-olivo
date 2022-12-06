@@ -209,7 +209,9 @@
                                 {% for producto in productos %}
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 ">
                                     <div class="offer-item">
+                                        
                                         <img class="thumbnail" alt="" src="{{producto.imagenURL}}">
+                                        <img class="thumbnail" alt="" src="{% static 'images/'%}{{producto.imagenURL}}">
                                         <div>
                                             <h3>{{producto.nombre}}</h3>
                                             <p>
