@@ -1,0 +1,183 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>El Olivo's Food Restaurant</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href='{% static "css/bootstrap.min.css" %}'>
+    <link rel="stylesheet" href='{% static "css/estilos.css" %}'>
+
+    <script type="text/javascript">
+        var user = '{{request.user}}'
+        
+        function getToken(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie !== '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = cookies[i].trim();
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         var csrftoken = getToken('csrftoken')
+ 
+         function getCookie(name) {
+             // Split cookie string and get all individual name=value pairs in an array
+             var cookieArr = document.cookie.split(";");
+ 
+             // Loop through the array elements
+             for(var i = 0; i < cookieArr.length; i++) {
+                 var cookiePair = cookieArr[i].split("=");
+ 
+                 /* Removing whitespace at the beginning of the cookie name
+                 and compare it with the given string */
+                 if(name == cookiePair[0].trim()) {
+                     // Decode the cookie value and return
+                     return decodeURIComponent(cookiePair[1]);
+                 }
+             }
+             // Return null if not found
+             return null;
+         }
+         var cart = JSON.parse(getCookie('cart'))
+ 
+         if (cart == undefined){
+             cart = {}
+             console.log('Cart Created!', cart)
+             document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+         }
+         console.log('Cart:', cart)
+ 
+     </script>
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+         
+
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container" id="main">
+    <div class="row">
+          <div class="col-md-12">
+            <fieldset>
+
+                <legend>Información de la Compra</legend>
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input value="{{request.user}}" type="text" class="form-control" readonly>
+                </div>
+                
+                
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input value="{{pedido.fecha}}" type="text" class="form-control" readonly>
+                </div>
+               
+
+
+                <hr>
+                    Productos Comprados
+                <hr>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Titulo</th>
+                      <th>Foto</th>
+                      <th>Precio</th>
+                      <th>Cantidad</th>
+                      <th>
+                          Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody> 
+                    {% for articulo in articulos %}
+                    <tr>
+                      <td></td>
+                      <td>{{ pedido.get_carrito_articulos_name}}</td>
+                      <td>
+                     
+                          <img src="{{articulo.producto.imagenURL}}" width="35">
+                      
+                      </td>
+                      <td>${{ articulo.producto.precio|floatformat:2}}</td>
+                      <td>{{articulo.cantidad}}</td>
+                    <td>
+                        ${{articulo.get_total|floatformat:2}}
+                    </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+
+                </table>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Total Compra</label>
+                        <input value="${{pedido.get_carrito_total|floatformat:2}}" type="text" class="form-control" readonly>
+                    </div>
+                </div>
+                
+            </fieldset>
+            <div class="pull-left">
+                <a href="{% url 'perfil' %}" class="btn btn-default hidden-print">Cancelar</a>
+            </div>
+
+            <div class="pull-right">
+                <a href="javascript:;" id="btnImprimir" class="btn btn-danger hidden-print">Imprimir</a>
+            </div>
+
+            
+             
+          </div>
+        </div>
+
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src='{% static "js/all.js" %}'></script>
+    <script src='{% static "js/bootstrap.min.js" %}'></script>
+    <script>
+        $('#btnImprimir').on('click',function(){
+
+            window.print();
+
+            return false;
+
+        })
+                        
+    </script>
+
+  </body>
+</html>

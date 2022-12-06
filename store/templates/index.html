@@ -1,0 +1,1164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
+
+    <!-- Site Metas -->
+    <title>El Olivo Restaurant</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Site Icons -->
+    <link rel="shortcut icon" href='{% static "images/favicon.ico" %}' type="image/x-icon" />
+    <link rel="apple-touch-icon" href='{% static "images/apple-touch-icon.png" %}'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href='{% static "css/bootstrap.min.css" %}'>
+    <!-- Site CSS -->
+    <link rel="stylesheet" href='{% static "css/style_index5.css" %}'>
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href='{% static "css/responsive.css" %}'>
+    <!-- color -->
+    <link id="changeable-colors" rel="stylesheet" href='{% static "css/colors/orange.css" %} ' />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/principal.css' %}? {% now 'U' %}">
+    <!-- Modernizer -->
+    <script src='{% static "js/modernizer.js" %}'></script>
+
+    <script type="text/javascript">
+        var user = '{{request.user}}'
+        
+        function getToken(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie !== '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = cookies[i].trim();
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         var csrftoken = getToken('csrftoken')
+ 
+         function getCookie(name) {
+             // Split cookie string and get all individual name=value pairs in an array
+             var cookieArr = document.cookie.split(";");
+ 
+             // Loop through the array elements
+             for(var i = 0; i < cookieArr.length; i++) {
+                 var cookiePair = cookieArr[i].split("=");
+ 
+                 /* Removing whitespace at the beginning of the cookie name
+                 and compare it with the given string */
+                 if(name == cookiePair[0].trim()) {
+                     // Decode the cookie value and return
+                     return decodeURIComponent(cookiePair[1]);
+                 }
+             }
+             // Return null if not found
+             return null;
+         }
+         var cart = JSON.parse(getCookie('cart'))
+ 
+         if (cart == undefined){
+             cart = {}
+             console.log('Cart Created!', cart)
+             document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+         }
+         console.log('Cart:', cart)
+ 
+     </script>
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <div id="loader">
+        <div id="status"></div>
+    </div>
+    <div id="site-header">
+        <header id="header" class="header-block-top">
+            <div class="container">
+                <div class="row">
+                    <div class="main-menu">
+                        <!-- navbar -->
+                        <nav class="navbar navbar-default" id="mainNav">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <div class="logo">
+                                    <a class="navbar-brand js-scroll-trigger logo-header" href="#">
+                                        <img src="{% static 'images/RESTAURANT_LOGO_INDEX.png'%}" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="navbar" class="navbar-collapse collapse">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="active"><a href="{% url 'Index' %}">Home</a></li>
+                                    <li><a href="{% url 'about_us' %}">About us</a></li>
+                                    <li><a href="{% url 'menu' %}">Menu</a></li>
+                                    <li><a href="{% url 'reservation'%}">Reservation</a></li>
+                                    <li><a href="{% url 'contact_us' %}">Contact us</a></li>
+                                    <li><a href="{% url 'carrito' %}"><div class="fas fa-shopping-cart fa-lg" id="cart-btn"></div></a></li>
+                                    <li><a href="{% url 'login' %}"><img  id="user-icon" src="{% static 'images/male_user.png' %}"></a></li>
+                                    <li><a href="{% url 'perfil' %}"><span id="nav" class="nav">{{request.user}}</span></a></li>
+                                    <li><a href="{% url 'logout' %}"><span id="logout"> Logout</a> </span></li>
+                                    <p id="cart-total" class="nav">{{carritoItems}}</p>
+                                </ul>
+                            </div>
+                            <!-- end nav-collapse -->
+                        </nav>
+                        <!-- end navbar -->
+                    </div>
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container-fluid -->
+        </header>
+        <!-- end header -->
+    </div>
+	<!-- end site-header -->
+	
+    <div id="banner" class="banner full-screen-mode parallax">
+        <div class="container pr">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="banner-static">
+                    <div class="banner-text">
+                        <div class="banner-cell">
+                            <h1>Dinner with us  <span class="typer" id="some-id" data-delay="200" data-delim=":" data-words="Friends:Family:Officemates" data-colors="red"></span><span class="cursor" data-cursorDisplay="_" data-owner="some-id"></span></h1>
+                            <h2>Accidental appearances </h2>
+                            <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diem nonummy nibh euismod</p>
+                            <div class="book-btn">
+                                <a href="{% url 'reservation'%}" class="table-btn hvr-underline-from-center">RESERVATION</a>
+                            </div>
+                            <a href="#about">
+                                <div class="mouse"></div>
+                            </a>
+                        </div>
+                        <!-- end banner-cell -->
+                    </div>
+                    <!-- end banner-text -->
+                </div>
+                <!-- end banner-static -->
+            </div>
+            <!-- end col -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end banner -->
+
+    <div class="special-menu pad-top-100 parallax">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                        <h2 class="block-title color-white text-center"> Today's Special </h2>
+                        <h5 class="title-caption text-center"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusm incididunt ut labore et dolore magna aliqua. Ut enim ad minim venia,nostrud exercitation ullamco. </h5>
+                    </div>
+                    <div class="special-box">
+                        <div id="owl-demo">
+                            <div class="item item-type-zoom">
+                                <a href="#" class="item-hover">
+                                    <div class="item-info">
+                                        <div class="headline">
+                                            CHANCHO AL PALO
+                                            <div class="line"></div>
+                                            <div class="dit-line">Lorem ipsum dolor sit amet, consectetur adip aliqua. Ut enim ad minim venia.</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="item-img">
+                                    <img src="images/Chancho_Palo.jpg" alt="sp-menu">
+                                </div>
+                            </div>
+                            <div class="item item-type-zoom">
+                                <a href="#" class="item-hover">
+                                    <div class="item-info">
+                                        <div class="headline">
+                                            ITALIAN PIZZA
+                                            <div class="line"></div>
+                                            <div class="dit-line">Lorem ipsum dolor sit amet, consectetur adip aliqua. Ut enim ad minim venia.</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="item-img">
+                                    <img src="images/special-menu-2.jpg" alt="sp-menu">
+                                </div>
+                            </div>
+                            <div class="item item-type-zoom">
+                                <a href="#" class="item-hover">
+                                    <div class="item-info">
+                                        <div class="headline">
+                                            VEG. ROLL
+                                            <div class="line"></div>
+                                            <div class="dit-line">Lorem ipsum dolor sit amet, consectetur adip aliqua. Ut enim ad minim venia.</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="item-img">
+                                    <img src="images/special-menu-3.jpg" alt="sp-menu">
+                                </div>
+                            </div>
+                            <div class="item item-type-zoom">
+                                <a href="#" class="item-hover">
+                                    <div class="item-info">
+                                        <div class="headline">
+                                            SALMON STEAK
+                                            <div class="line"></div>
+                                            <div class="dit-line">Lorem ipsum dolor sit amet, consectetur adip aliqua. Ut enim ad minim venia.</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="item-img">
+                                    <img src="images/special-menu-1.jpg" alt="sp-menu">
+                                </div>
+                            </div>
+                            <div class="item item-type-zoom">
+                                <a href="#" class="item-hover">
+                                    <div class="item-info">
+                                        <div class="headline">
+                                            VEG. ROLL
+                                            <div class="line"></div>
+                                            <div class="dit-line">Lorem ipsum dolor sit amet, consectetur adip aliqua. Ut enim ad minim venia.</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <div class="item-img">
+                                    <img src="images/special-menu-2.jpg" alt="sp-menu">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end special-box -->
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end special-menu -->
+
+    <div id="gallery" class="gallery-main pad-top-100 pad-bottom-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                        <h2 class="block-title text-center">
+						Our Gallery	
+					</h2>
+                        <p class="title-caption text-center">There are many variations of passages of Lorem Ipsum available </p>
+                    </div>
+                    <div class="gal-container clearfix">
+                        <div class="col-md-8 col-sm-12 co-xs-12 gal-item">
+                            <div class="box">
+                                <a href="#" data-toggle="modal" data-target="#1">
+                                    <img src="images/gallery_01.jpg" alt="" />
+                                </a>
+                                <div class="modal fade" id="1" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            <div class="modal-body">
+                                                <img src="images/gallery_01.jpg" alt="" />
+                                            </div>
+                                            <div class="col-md-12 description">
+                                                <h4>This is the 1 one on my Gallery</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 co-xs-12 gal-item">
+                            <div class="box">
+                                <a href="#" data-toggle="modal" data-target="#2">
+                                    <img src="images/gallery_02.jpg" alt="" />
+                                </a>
+                                <div class="modal fade" id="2" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            <div class="modal-body">
+                                                <img src="images/gallery_02.jpg" alt="" />
+                                            </div>
+                                            <div class="col-md-12 description">
+                                                <h4>This is the 2 one on my Gallery</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 co-xs-12 gal-item">
+                            <div class="box">
+                                <a href="#" data-toggle="modal" data-target="#3">
+                                    <img src="images/gallery_03.jpg" alt="" />
+                                </a>
+                                <div class="modal fade" id="3" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            <div class="modal-body">
+                                                <img src="images/gallery_03.jpg" alt="" />
+                                            </div>
+                                            <div class="col-md-12 description">
+                                                <h4>This is the 3 one on my Gallery</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 co-xs-12 gal-item">
+                            <div class="box">
+                                <a href="#" data-toggle="modal" data-target="#4">
+                                    <img src="images/gallery_04.jpg" alt="" />
+                                </a>
+                                <div class="modal fade" id="4" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            <div class="modal-body">
+                                                <img src="images/gallery_04.jpg" alt="" />
+                                            </div>
+                                            <div class="col-md-12 description">
+                                                <h4>This is the 4 one on my Gallery</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 co-xs-12 gal-item">
+                            <div class="box">
+                                <a href="#" data-toggle="modal" data-target="#5">
+                                    <img src="images/gallery_05.jpg" alt="" />
+                                </a>
+                                <div class="modal fade" id="5" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            <div class="modal-body">
+                                                <img src="images/gallery_05.jpg" alt="" />
+                                            </div>
+                                            <div class="col-md-12 description">
+                                                <h4>This is the 5 one on my Gallery</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 co-xs-12 gal-item">
+                            <div class="box">
+                                <a href="#" data-toggle="modal" data-target="#9">
+                                    <img src="images/gallery_06.jpg" alt="" />
+                                </a>
+                                <div class="modal fade" id="9" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            <div class="modal-body">
+                                                <img src="images/gallery_06.jpg" alt="" />
+                                            </div>
+                                            <div class="col-md-12 description">
+                                                <h4>This is the 6 one on my Gallery</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 col-sm-12 co-xs-12 gal-item">
+                            <div class="box">
+                                <a href="#" data-toggle="modal" data-target="#10">
+                                    <img src="images/gallery_07.jpg" alt="" />
+                                </a>
+                                <div class="modal fade" id="10" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                            <div class="modal-body">
+                                                <img src="images/gallery_07.jpg" alt="" />
+                                            </div>
+                                            <div class="col-md-12 description">
+                                                <h4>This is the 7 one on my Gallery</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end gal-container -->
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end gallery-main -->
+   
+
+   
+
+  
+
+    <div id="our_team" class="team-main pad-top-100 pad-bottom-100 parallax">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                        <h2 class="block-title text-center">
+						Our Team 	
+					</h2>
+                        <p class="title-caption text-center">There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. </p>
+                    </div>
+                    <div class="team-box">
+
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6">
+                                <div class="sf-team">
+                                    <div class="thumb">
+                                        <a href="#"><img src="images/staff-01.jpg" alt=""></a>
+                                    </div>
+                                    <div class="text-col">
+                                        <h3>John Doggett</h3>
+                                        <p>Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Aenean commodo ligula.</p>
+                                        <ul class="team-social">
+                                            <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end col -->
+                            <div class="col-md-4 col-sm-6">
+                                <div class="sf-team">
+                                    <div class="thumb">
+                                        <a href="#"><img src="images/staff-02.jpg" alt=""></a>
+                                    </div>
+                                    <div class="text-col">
+                                        <h3>Jeffrey Spender</h3>
+                                        <p>Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Aenean commodo ligula.</p>
+                                        <ul class="team-social">
+                                            <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end col -->
+                            <div class="col-md-4 col-sm-6">
+                                <div class="sf-team">
+                                    <div class="thumb">
+                                        <a href="#"><img src="images/staff-03.jpg" alt=""></a>
+                                    </div>
+                                    <div class="text-col">
+                                        <h3>Monica Reyes</h3>
+                                        <p>Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Aenean commodo ligula.</p>
+                                        <ul class="team-social">
+                                            <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                            <li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end col -->
+                        </div>
+                        <!-- end row -->
+
+                    </div>
+                    <!-- end team-box -->
+
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end team-main -->
+
+   
+
+    <div id="blog" class="blog-main pad-top-100 pad-bottom-100 parallax">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <h2 class="block-title text-center">
+					Our Blog 	
+				</h2>
+                    <div class="blog-box clearfix">
+                        <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="blog-block">
+                                    <div class="blog-img-box">
+                                        <img src="images/featured-image-01.jpg" alt="" />
+                                        <div class="overlay">
+                                            <a href=""><i class="fa fa-link" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="blog-dit">
+                                        <p><span>25 NOVEMBER, 2014</span></p>
+                                        <h2>LATEST RECIPES JUST IN!</h2>
+                                        <h5>BY John Doggett</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end col -->
+                        </div>
+                        <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="blog-block">
+                                    <div class="blog-img-box">
+                                        <img src="images/featured-image-02.jpg" alt="" />
+                                        <div class="overlay">
+                                            <a href=""><i class="fa fa-link" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="blog-dit">
+                                        <p><span>2 NOVEMBER, 2014</span></p>
+                                        <h2>NEW RECRUITS HAVE ARRIVED!</h2>
+                                        <h5>BY Jeffrey Spender</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end col -->
+                        </div>
+                        <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="blog-block">
+                                    <div class="blog-img-box">
+                                        <img src="images/featured-image-03.jpg" alt="" />
+                                        <div class="overlay">
+                                            <a href=""><i class="fa fa-link" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="blog-dit">
+                                        <p><span>4 NOVEMBER, 2014</span></p>
+                                        <h2>BAKING TIPS FROM THE PROS</h2>
+                                        <h5>BY Monica Reyes</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end col -->
+                        </div>
+                        <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="blog-block">
+                                    <div class="blog-img-box">
+                                        <img src="images/featured-image-04.jpg" alt="" />
+                                        <div class="overlay">
+                                            <a href=""><i class="fa fa-link" aria-hidden="true"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="blog-dit">
+                                        <p><span>12 NOVEMBER, 2014</span></p>
+                                        <h2>ALL YOUR EGGS BELONG TO US</h2>
+                                        <h5>BY John Doggett</h5>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end col -->
+                        </div>
+                    </div>
+                    <!-- end blog-box -->
+
+                    <div class="blog-btn-v">
+                        <a class="hvr-underline-from-center" href="#">View the Blog</a>
+                    </div>
+
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    <!-- end blog-main -->
+
+
+
+   
+
+    <div id="footer" class="footer-main">
+        <div class="footer-news pad-top-100 pad-bottom-70 parallax">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                            <h2 class="ft-title color-white text-center"> Newsletter </h2>
+                            <p> Lorem ipsum dolor sit amet, consectetur adipiscing elit</p>
+                        </div>
+                        <form>
+                            <input type="email" placeholder="Enter your e-mail id">
+                            <a href="#" class="orange-btn"><i class="fa fa-paper-plane-o" aria-hidden="true"></i></a>
+                        </form>
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container -->
+        </div>
+        <!-- end footer-news -->
+        <div class="footer-box pad-top-70">
+            <div class="container">
+                <div class="row">
+                    <div class="footer-in-main">
+                        <div class="footer-logo">
+                            <div class="text-center">
+                                <img src="images/RESTAURANT_LOGO_INDEX.png" alt="" />
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="footer-box-a">
+                                <h3>About Us</h3>
+                                <p>Aenean commodo ligula eget dolor aenean massa. Cum sociis nat penatibu set magnis dis parturient montes.</p>
+                                <ul class="socials-box footer-socials pull-left">
+                                    <li>
+                                        <a href="#">
+                                            <div class="social-circle-border"><i class="fa  fa-facebook"></i></div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="social-circle-border"><i class="fa fa-twitter"></i></div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="social-circle-border"><i class="fa fa-google-plus"></i></div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="social-circle-border"><i class="fa fa-pinterest"></i></div>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <div class="social-circle-border"><i class="fa fa-linkedin"></i></div>
+                                        </a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <!-- end footer-box-a -->
+                        </div>
+                        <!-- end col -->
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="footer-box-b">
+                                <h3>New Menu</h3>
+                                <ul>
+                                    <li><a href="#">Italian Bomba Sandwich</a></li>
+                                    <li><a href="#">Double Dose of Pork Belly</a></li>
+                                    <li><a href="#">Spicy Thai Noodles</a></li>
+                                    <li><a href="#">Triple Truffle Trotters</a></li>
+                                </ul>
+                            </div>
+                            <!-- end footer-box-b -->
+                        </div>
+                        <!-- end col -->
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="footer-box-c">
+                                <h3>Contact Us</h3>
+                                <p>
+                                    <i class="fa fa-map-signs" aria-hidden="true"></i>
+                                    <span>6 E Esplanade, St Albans VIC 3021, Australia</span>
+                                </p>
+                                <p>
+                                    <i class="fa fa-mobile" aria-hidden="true"></i>
+                                    <span>
+									+91 80005 89080 
+								</span>
+                                </p>
+                                <p>
+                                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                                    <span><a href="#">support@foodfunday.com</a></span>
+                                </p>
+                            </div>
+                            <!-- end footer-box-c -->
+                        </div>
+                        <!-- end col -->
+                        <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <div class="footer-box-d">
+                                <h3>Opening Hours</h3>
+
+                                <ul>
+                                    <li>
+                                        <p>Monday - Thursday </p>
+                                        <span> 11:00 AM - 9:00 PM</span>
+                                    </li>
+                                    <li>
+                                        <p>Friday - Saturday </p>
+                                        <span>  11:00 AM - 5:00 PM</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- end footer-box-d -->
+                        </div>
+                        <!-- end col -->
+                    </div>
+                    <!-- end footer-in-main -->
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container -->
+            <div id="copyright" class="copyright-main">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <h6 class="copy-title"> Copyright &copy; 2022 Capanio's Food is powered by <a href="#" target="_blank"></a> </h6>
+                        </div>
+                    </div>
+                    <!-- end row -->
+                </div>
+                <!-- end container -->
+            </div>
+            <!-- end copyright-main -->
+        </div>
+        <!-- end footer-box -->
+    </div>
+    <!-- end footer-main -->
+
+    <a href="#" class="scrollup" style="display: none;">Scroll</a>
+
+
+    <!-- ALL JS FILES -->
+    <script src='{% static "js/all.js" %}'></script>
+    <script src='{% static "js/bootstrap.min.js" %}'></script>
+    <!-- ALL PLUGINS -->
+    <script type="text/javascript" >
+                /******************************************
+            File Name: custom.js
+            Template Name: Landigoo
+            Created By: MelodyThemes
+            Envato Profile: http://themeforest.net/user/melodythemes
+            Website: https://melodythemes.com
+            Version: 1.0
+        /****************************************** */
+
+                (function($) {
+                    "use strict";
+                    
+                        /* ==============================================
+                            SMOOTH SCROLL 
+                        =============================================== */
+                        $('a[href*=#]:not([href=#])').click(function() {
+                            if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') 
+                                || location.hostname == this.hostname) {
+                        
+                                var target = $(this.hash);
+                                target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+                                if (target.length) {
+                                    $('html,body').animate({
+                                        scrollTop: target.offset().top
+                                    }, 1000);
+                                    return false;
+                                }
+                            }
+                        });
+                        // Activate scrollspy to add active class to navbar items on scroll
+                        $('body').scrollspy({
+                            target: '#mainNav',
+                            offset: 54
+                        });
+                        /* =========================
+                            SCROLL MENU
+                        =========================*/
+                        $(window).on('scroll', function () {
+                            if ($(window).scrollTop() > 50) {
+                                $('.header-block-top').addClass('fixed-menu');
+                            } else {
+                                $('.header-block-top').removeClass('fixed-menu');
+                            }
+                        });
+                        
+                        /* =========================
+                            NAV MENU
+                        =========================*/
+                        $('.navbar-nav li a').on("click", function(e) {
+                            $('.navbar-nav li').removeClass('active');
+                            var $parent = $(this).parent();
+                            if (!$parent.hasClass('active')) {
+                                $parent.addClass('active');
+                            }
+                        });
+                        
+                        /* =========================
+                            CAROUSEL 
+                        =========================*/
+                        
+                        $(document).ready(function() {
+                        $("#owl-demo").owlCarousel({
+                            autoPlay: 3000, //Set AutoPlay to 3 seconds
+                            items : 3,
+                            itemsDesktop : [1199,3],
+                            itemsDesktopSmall : [979,2]
+                        
+                        });
+                        });
+                        
+                        /* ========================
+                            SLIDER - TAB 
+                        =============================*/
+                        
+                        
+                        $('.slider-single').slick({
+                            slidesToShow: 1,
+                            slidesToScroll: 1,
+                            arrows: false,
+                            fade: false,
+                            adaptiveHeight: true,
+                            infinite: false,
+                            useTransform: true,
+                            speed: 400,
+                            cssEase: 'cubic-bezier(0.77, 0, 0.18, 1)',
+                        });
+                        
+                        $('.slider-nav')
+                            .on('init', function(event, slick) {
+                                $('.slider-nav .slick-slide.slick-current').addClass('is-active');
+                            })
+                            .slick({
+                                slidesToShow: 4,
+                                slidesToScroll: 7,
+                                dots: false,
+                                focusOnSelect: false,
+                                infinite: false,
+                                responsive: [{
+                                    breakpoint: 1024,
+                                    settings: {
+                                        slidesToShow: 4,
+                                        slidesToScroll: 4,
+                                    }
+                                }, {
+                                    breakpoint: 769,
+                                    settings: {
+                                        slidesToShow: 4,
+                                        slidesToScroll: 4,
+                                    }
+                                }, {
+                                    breakpoint: 420,
+                                    settings: {
+                                        slidesToShow: 3,
+                                        slidesToScroll: 3,
+                                }
+                                }]
+                            });
+                        
+                        $('.slider-single').on('afterChange', function(event, slick, currentSlide) {
+                            $('.slider-nav').slick('slickGoTo', currentSlide);
+                            var currrentNavSlideElem = '.slider-nav .slick-slide[data-slick-index="' + currentSlide + '"]';
+                            $('.slider-nav .slick-slide.is-active').removeClass('is-active');
+                            $(currrentNavSlideElem).addClass('is-active');
+                        });
+                        
+                        $('.slider-nav').on('click', '.slick-slide', function(event) {
+                            event.preventDefault();
+                            var goToSingleSlide = $(this).data('slick-index');
+                        
+                            $('.slider-single').slick('slickGoTo', goToSingleSlide);
+                        });
+                        
+                        
+                        /* ========================
+                            WOW ANIMATION
+                        =============================*/
+                        
+                            new WOW().init();
+                            
+                        /* ========================
+                            DATE/TIME PICKER
+                        =============================*/
+                        
+                        var date = new Date();
+                        var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                        $('#date-picker').datetimepicker({
+                            format: 'DD.MM.YYYY',
+                            minDate: today
+                        });
+                        $('#time-picker').datetimepicker({
+                            format: 'LT'
+                        });
+                        
+                        /* ==============================================
+                            SELECTPICKER
+                        =============================================== */
+                        
+                        $('.selectpicker').selectpicker();
+
+                        /* ==============================================
+                            PRELOADER
+                        =============================================== */
+                        
+                        
+                        $(window).load(function() { 
+                            $("#status").fadeOut("slow"); 
+                            $("#loader").delay(200).fadeOut(); 
+                        })
+                        
+                        
+                        
+                        /* ==============================================
+                            SCROLL UP
+                        =============================================== */
+                            
+                            $(window).scroll(function(){
+                                if ($(this).scrollTop() > 100) {
+                                    $('.scrollup').fadeIn();
+                                } else {
+                                    $('.scrollup').fadeOut();
+                                }
+                            }); 
+                            
+                            $('.scrollup').click(function(){
+                                $("html, body").animate({ scrollTop: 0 }, 600);
+                                return false;
+                            });
+                        
+                        /* ================================================
+                            COLOR PANEL OPEN/CLOSE
+                        ================================================ */
+                        
+                        $( "#color-panel .panel-button" ).click(function(){
+                            $( "#color-panel" ).toggleClass( "close-color-panel", "open-color-panel", 1000 );
+                            $( "#color-panel" ).toggleClass( "open-color-panel", "close-color-panel", 1000 );
+                            return false;
+                        });
+                        // Color Skins
+                        $('.switcher').click(function(){
+                            var title = jQuery(this).attr('title');		
+                            jQuery('#changeable-colors').attr('href', 'css/colors/' + title + '.css');				
+                            return false;
+                        });	
+                        
+                        jQuery(".orange-bg").on('click',function(){
+                            jQuery(".logo-header img").attr("src", "images/logo.png");
+                            jQuery(".footer-logo .text-center img").attr("src", "images/logo.png");
+                            return false;
+                        });
+
+                        jQuery(".strong-blue-bg").on('click',function(){
+                            jQuery(".logo-header img").attr("src", "images/logo2.png");
+                            jQuery(".footer-logo .text-center img").attr("src", "images/logo2.png");
+                            return false;
+                        });
+
+                        jQuery(".moderate-green-bg").on('click',function(){
+                            jQuery(".logo-header img").attr("src", "images/logo3.png");
+                            jQuery(".footer-logo .text-center img").attr("src", "images/logo3.png");
+                            return false;
+                        });
+
+                        jQuery(".vivid-yellow-bg").on('click',function(){
+                            jQuery(".logo-header img").attr("src", "images/logo4.png");
+                            jQuery(".footer-logo .text-center img").attr("src", "images/logo4.png");
+                            return false;
+                        });
+
+                        /* ==============================================
+                            PARALLAX
+                        =============================================== */	
+                        
+                        $.fn.parallax = function(options) {
+                
+                            var windowHeight = $(window).height();
+                    
+                            // Establish default settings
+                            var settings = $.extend({
+                                speed        : 0.15
+                            }, options);
+                    
+                            // Iterate over each object in collection
+                            return this.each( function() {
+                    
+                                // Save a reference to the element
+                                var $this = $(this);
+                    
+                                // Set up Scroll Handler
+                                $(document).scroll(function(){
+                    
+                                        var scrollTop = $(window).scrollTop();
+                                            var offset = $this.offset().top;
+                                            var height = $this.outerHeight();
+                    
+                                // Check if above or below viewport
+                                if (offset + height <= scrollTop || offset >= scrollTop + windowHeight) {
+                                    return;
+                                }
+                    
+                                var yBgPosition = Math.round((offset - scrollTop) * settings.speed);
+                    
+                                    // Apply the Y Background Position to Set the Parallax Effect
+                                    $this.css('background-position', 'center ' + yBgPosition + 'px');
+                                    
+                                });
+                            });
+                        }
+                    
+                        $('.parallax').parallax({
+                            speed : 0.15
+                        });
+                        
+                        /* ==============================================
+                            CONTACT FORM
+                        =============================================== */	
+                            jQuery(document).ready(function() {
+                                $('#contact-form').submit(function() {
+                                    var action = $(this).attr('action');
+                                    $("#message").slideUp(750, function() {
+                                        $('#message').hide();
+                                        $('#submit')
+                                            .after('<img src="images/ajax-loader.gif" class="loader" />')
+                                            .attr('disabled', 'disabled');
+                                        $.post(action, {
+                                                first_name: $('#first_name').val(),
+                                                email: $('#email').val(),
+                                                phone: $('#phone').val(),
+                                                no_of_persons: $('#no_of_persons').val(),
+                                                preferred_food: $('#preferred_food').val(),
+                                                occasion: $('#occasion').val(),
+                                                verify: $('#verify').val()
+                                            },
+                                            function(data) {
+                                                document.getElementById('message').innerHTML = data;
+                                                $('#message').slideDown('slow');
+                                                $('#contact-form img.loader').fadeOut('slow', function() {
+                                                    $(this).remove()
+                                                });
+                                                $('#submit').removeAttr('disabled');
+                                                if (data.match('success') != null) $('#contact-form').slideUp('slow');
+                                            }
+                                        );
+                                    });
+                                    return false;
+                                });
+                            });
+                        
+                    
+                })(jQuery);
+    </script>
+
+   
+
+    <script type="text/javascript">
+        var updateBtns = document.getElementsByClassName('update-cart')
+
+        for (i = 0; i < updateBtns.length; i++) {
+            updateBtns[i].addEventListener('click', function(){
+                var productoId = this.dataset.producto
+                var action = this.dataset.action
+                console.log('productoId:', productoId, 'Action:', action)
+                console.log('USER:', user)
+
+                if (user == 'AnonymousUser'){
+                    addCookieItem(productoId, action)
+                }else{
+                    updateUserPedido(productoId, action)
+                }
+            })
+        }
+
+        function addCookieItem(productoId, action){
+            console.log('User is not authenticated')
+
+            if (action == 'add'){
+                if (cart[productoId] == undefined){
+                cart[productoId] = {'quantity':1}
+
+                }else{
+                    cart[productoId]['quantity'] += 1
+                }
+            }
+
+            if (action == 'remove'){
+                cart[productoId]['quantity'] -= 1
+
+                if (cart[productoId]['quantity'] <= 0){
+                    console.log('Item should be deleted')
+                    delete cart[productoId];
+                }
+            }
+            console.log('CART:', cart)
+            document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+            location.reload()
+        }
+
+        function updateUserPedido(productoId, action){
+            console.log('User is authenticated, sending data...')
+
+            var url = '/update_articulo/'
+
+            fetch(url, {
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                    'X-CSRFToken':csrftoken,
+                }, 
+                body:JSON.stringify({'productoId':productoId, 'action':action}),
+            })
+            .then((response) => {
+            return response.json();
+            })
+            .then((data) => {
+                console.log('Data:', data)
+                location.reload()
+            });
+        }
+    </script>
+    <script type="text/javascript">
+       if (user != 'AnonymousUser'){
+           //button
+           document.getElementById('login').classList.add("hidden");
+          
+          
+       }
+       else{
+        document.getElementById('cart-total').classList.add("hidden");
+           document.getElementById('nav').classList.add("hidden");
+           document.getElementById('logout').classList.add("hidden");
+           document.getElementById('perfil').classList.add("hidden");
+           
+       }
+   </script>
+</body>
+
+</html>

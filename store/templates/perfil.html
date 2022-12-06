@@ -1,0 +1,354 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, maximum-scale=1, initial-scale=1, user-scalable=0">
+
+    <!-- Site Metas -->
+    <title>Capanio's Food Restaurant</title>
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Site Icons -->
+    <link rel="shortcut icon" href='{% static "images/favicon.ico" %}' type="image/x-icon" />
+    <link rel="apple-touch-icon" href='{% static "images/apple-touch-icon.png" %}'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href='{% static "css/bootstrap.min.css" %}'>
+    <!-- Site CSS -->
+    <link rel="stylesheet" href='{% static "css/style_perfil.css" %}'>
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href='{% static "css/responsive.css" %}'>
+
+    <link rel="stylesheet" href='{% static "js/app.js" %}'>
+    <!-- color -->
+    <link id="changeable-colors" rel="stylesheet" href='{% static "css/colors/orange.css" %} ' />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/principal.css' %}? {% now 'U' %}">
+    <!-- Modernizer -->
+    <script src='{% static "js/modernizer.js" %}'></script>
+
+    <script type="text/javascript">
+        var user = '{{request.user}}'
+        
+        function getToken(name) {
+             var cookieValue = null;
+             if (document.cookie && document.cookie !== '') {
+                 var cookies = document.cookie.split(';');
+                 for (var i = 0; i < cookies.length; i++) {
+                     var cookie = cookies[i].trim();
+                     // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+         }
+         var csrftoken = getToken('csrftoken')
+ 
+         function getCookie(name) {
+             // Split cookie string and get all individual name=value pairs in an array
+             var cookieArr = document.cookie.split(";");
+ 
+             // Loop through the array elements
+             for(var i = 0; i < cookieArr.length; i++) {
+                 var cookiePair = cookieArr[i].split("=");
+ 
+                 /* Removing whitespace at the beginning of the cookie name
+                 and compare it with the given string */
+                 if(name == cookiePair[0].trim()) {
+                     // Decode the cookie value and return
+                     return decodeURIComponent(cookiePair[1]);
+                 }
+             }
+             // Return null if not found
+             return null;
+         }
+         var cart = JSON.parse(getCookie('cart'))
+ 
+         if (cart == undefined){
+             cart = {}
+             console.log('Cart Created!', cart)
+             document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+         }
+         console.log('Cart:', cart)
+ 
+     </script>
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <div id="loader">
+        <div id="status"></div>
+    </div>
+    <div id="site-header">
+        <header id="header" class="header-block-top">
+            <div class="container">
+                <div class="row">
+                    <div class="main-menu">
+                        <!-- navbar -->
+                        <nav class="navbar navbar-default" id="mainNav">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </button>
+                                <div class="logo">
+                                    <a class="navbar-brand js-scroll-trigger logo-header" href="#">
+                                        <img src="{% static 'images/RESTAURANT_LOGO_INDEX.png'%}" alt="">
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="navbar" class="navbar-collapse collapse">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li><a href="{% url 'Index' %}">Home</a></li>
+                                    <li><a href="{% url 'about_us' %}">About us</a></li>
+                                    <li><a href="{% url 'menu' %}">Menu</a></li>
+                                    
+                                    <li><a href="{% url 'reservation'%}">Reservation</a></li>
+                                    <li><a href="{% url 'contact_us' %}">Contact us</a></li>
+                                    
+                                    <li><a href="{% url 'carrito' %}"><div class="fas fa-shopping-cart fa-lg" id="cart-btn"></div></a></li>
+                                    <li><a href="{% url 'login' %}"><img  id="user-icon" src="{% static 'images/male_user.png' %}"></a></li>
+                                    <li class="active"><a href="{% url 'perfil' %}"><span id="nav" class="nav">{{request.user}}</span></a></li>
+                                    <li><a href="{% url 'logout' %}"><span id="logout"> Logout</a> </span></li>
+                                    <p id="cart-total" class="nav">{{carritoItems}}</p>
+                                    <br>
+                                    
+                                </ul>
+                            </div>
+                            <!-- end nav-collapse -->
+                        </nav>
+                        <!-- end navbar -->
+                    </div>
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container-fluid -->
+        </header>
+        <!-- end header -->
+    </div>
+	<!-- end site-header -->
+    
+    <div id="menu" class="menu-main pad-top-100 pad-bottom-100">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.1s">
+                        <h2 class="block-title text-center">
+						Perfil de Usuario	
+					</h2>
+                        <p class="title-caption text-center">A Continuación se muestra el historial de pedidos que usted realizo:
+                        </p>
+                    </div>
+                    <div class="tab-menu">
+                        <div class="container">
+                            <div>
+                                <h1>Pedidos realizados</h1>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="box-pedido">
+                                            <div class="cart-row" >
+                                                <div style="flex:2;"><p> <strong>Numero de pedido</strong> </p> </div>
+                                                <div style="flex:2"><p><strong>Fecha</strong></p></div>
+                                                <div style="flex:2"><p><strong>Estado</strong></p></div>
+                                                <div style="flex:1"><p><strong>Productos</strong></p></div>
+                                            </div>
+                                            {% for pedido in pedidos %}
+                                            <div class="cart-row">
+                                                <div style="flex:2"><p>{{pedido}}</p></div>
+                                                <div style="flex:2"><p>{{pedido.fecha}}</p></div>
+                                                <div style="flex:2"><p>{{pedido.estado}}</p></div>
+                                                <div style="flex:1">
+                                                    <p><a class="btn btn-outline-success" href="{% url 'ver_pedido' %}">Ver</a></p>
+                                                </div>
+                                            </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                    <!-- end tab-menu -->
+                </div>
+                <!-- end col -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div></div></div></div></div>
+    <!-- end menu -->
+
+      <!-- end footer-news -->
+      <div class="footer-box pad-top-70">
+        <div class="container">
+            <div class="row">
+                <div class="footer-in-main">
+                    <div class="footer-logo">
+                        <div class="text-center">
+                            <img src="{% static 'images/RESTAURANT_LOGO_INDEX.png'%}" alt="" />
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="footer-box-a">
+                            <h3>About Us</h3>
+                            <p>Aenean commodo ligula eget dolor aenean massa. Cum sociis nat penatibu set magnis dis parturient montes.</p>
+                            <ul class="socials-box footer-socials pull-left">
+                                <li>
+                                    <a href="#">
+                                        <div class="social-circle-border"><i class="fa  fa-facebook"></i></div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="social-circle-border"><i class="fa fa-twitter"></i></div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="social-circle-border"><i class="fa fa-google-plus"></i></div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="social-circle-border"><i class="fa fa-pinterest"></i></div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="social-circle-border"><i class="fa fa-linkedin"></i></div>
+                                    </a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                        <!-- end footer-box-a -->
+                    </div>
+                    <!-- end col -->
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="footer-box-b">
+                            <h3>New Menu</h3>
+                            <ul>
+                                <li><a href="#">Italian Bomba Sandwich</a></li>
+                                <li><a href="#">Double Dose of Pork Belly</a></li>
+                                <li><a href="#">Spicy Thai Noodles</a></li>
+                                <li><a href="#">Triple Truffle Trotters</a></li>
+                            </ul>
+                        </div>
+                        <!-- end footer-box-b -->
+                    </div>
+                    <!-- end col -->
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="footer-box-c">
+                            <h3>Contact Us</h3>
+                            <p>
+                                <i class="fa fa-map-signs" aria-hidden="true"></i>
+                                <span>6 E Esplanade, St Albans VIC 3021, Australia</span>
+                            </p>
+                            <p>
+                                <i class="fa fa-mobile" aria-hidden="true"></i>
+                                <span>
+                                +91 80005 89080 
+                            </span>
+                            </p>
+                            <p>
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span><a href="#">support@foodfunday.com</a></span>
+                            </p>
+                        </div>
+                        <!-- end footer-box-c -->
+                    </div>
+                    <!-- end col -->
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="footer-box-d">
+                            <h3>Opening Hours</h3>
+
+                            <ul>
+                                <li>
+                                    <p>Monday - Thursday </p>
+                                    <span> 11:00 AM - 9:00 PM</span>
+                                </li>
+                                <li>
+                                    <p>Friday - Saturday </p>
+                                    <span>  11:00 AM - 5:00 PM</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- end footer-box-d -->
+                    </div>
+                    <!-- end col -->
+                </div>
+                <!-- end footer-in-main -->
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+        <div id="copyright" class="copyright-main">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <h6 class="copy-title"> Copyright &copy; 2022 Capanio's Food is powered by <a href="#" target="_blank"></a> </h6>
+                    </div>
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container -->
+        </div>
+        <!-- end copyright-main -->
+    </div>
+    <!-- end footer-box -->
+</div>
+<!-- end footer-main -->
+
+
+    <a href="#" class="scrollup" style="display: none;">Scroll</a>
+
+
+    <!-- ALL JS FILES -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script src='{% static "js/all.js" %}'></script>
+    <script src='{% static "js/bootstrap.min.js" %}'></script>
+    <!-- ALL PLUGINS -->
+    <script src='{% static "js/custom.js" %}'></script>
+
+    <script type="text/javascript" src='{% static 'js/carrito.js' %}'></script>
+    <script type="text/javascript">
+       if (user != 'AnonymousUser'){
+           //button
+           document.getElementById('login').classList.add("hidden");
+          
+          
+       }
+       else{
+        document.getElementById('cart-total').classList.add("hidden");
+           document.getElementById('nav').classList.add("hidden");
+           document.getElementById('logout').classList.add("hidden");
+           document.getElementById('perfil').classList.add("hidden");
+           
+       }
+   </script>
+</body>
+
+</html>
+
